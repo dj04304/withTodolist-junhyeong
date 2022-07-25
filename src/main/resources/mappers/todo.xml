@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.junhyeong.todolist2.domain.todo.TodoRepository">
+  	<insert id="save" parameterType="com.junhyeong.todolist2.domain.todo.Todo">
+  		insert into
+  			todo_mst
+  		values(
+  			0,
+  			#{todo_content},
+  			0,
+  			#{importance_flag},
+  			now(),
+  			now()
+  		)
+  	</insert>
+  </mapper>
+  
