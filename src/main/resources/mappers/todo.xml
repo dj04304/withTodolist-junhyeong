@@ -16,5 +16,29 @@
   			now()
   		)
   	</insert>
+  	
+  	<select id="getTodoListOfIndex" parameterType="hashmap" resultType="com.junhyeong.todolist2.domain.todo.Todo">
+  		select
+  			tm.todo_code,
+  			
+  			tm.todo_content,
+  			tm.todo_complete,
+  			tm.importance_flag,
+  			
+  			tt.total_count,
+  			
+  			tm.create_date,
+  			tm.update_date
+  			
+  		from
+  			todo_mst tm
+			LEFT OUTER JOIN(select
+									COUNT(*) AS total_count
+								from
+									todo_mst) tt ON (1 = 1)
+  		order by
+  			todo_code desc
+  		limit #{index}, #{count}
+  	</select>
   </mapper>
   
