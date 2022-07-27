@@ -11,6 +11,7 @@ import com.junhyeong.todolist2.domain.todo.Todo;
 import com.junhyeong.todolist2.domain.todo.TodoRepository;
 import com.junhyeong.todolist2.web.dto.todo.CreateTodoReqDto;
 import com.junhyeong.todolist2.web.dto.todo.TodoListRespDto;
+import com.junhyeong.todolist2.web.dto.todo.UpdateTodoReqDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,6 +21,8 @@ public class TodoServiceImpl implements TodoService{
 	
 	private final TodoRepository todoRepository;
 
+	
+	// todolist 생성
 	@Override
 	public boolean createTodo(CreateTodoReqDto createTodoReqDto) throws Exception {
 		Todo todoEntity = createTodoReqDto.toEntity();
@@ -33,19 +36,70 @@ public class TodoServiceImpl implements TodoService{
 //			}
 //			todoRepository.save(todoEntity);
 //		}
+//		return true;
 		
-		return true;
-//		return todoRepository.save(todoEntity) > 0;
+		return todoRepository.save(todoEntity) > 0;
 	}
+	
+	//list 조회
 	
 	@Override
 	public List<TodoListRespDto> getTodoList(int page, int contentCount) throws Exception {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("index", (page - 1) * contentCount); //index key값으로 원하는 페이지 수만큼을 가져온다.(contentCount)
-		map.put("count", contentCount); //count key값으로 count를 알려줌
 		
-		List<Todo> todoList = todoRepository.getTodoListOfIndex(map);
 		
+		List<Todo> todoList = todoRepository.getTodoListOfIndex(createGetTodoListMap(page, contentCount));
+		
+		
+		return createTodoListRespDtos(todoList);
+	}
+	
+	//importance 조회
+	
+	@Override
+	public List<TodoListRespDto> getImportanceTodoList(int page, int contentCount) throws Exception {
+		
+		List<Todo> todoList = todoRepository.getImportanceTodoListOfIndex(createGetTodoListMap(page, contentCount));
+		
+		
+		
+		return createTodoListRespDtos(todoList);
+	}
+	
+	//update todoComplete 
+	@Override
+	public boolean updateTodoComplete(int todoCode) throws Exception {
+		return todoRepository.updateTodoComplete(todoCode) > 0;
+	}
+	
+	//update todoImportance
+	@Override
+	public boolean updateTodoImportance(int todoCode) throws Exception {
+		return todoRepository.updateTodoImportance(todoCode) > 0;
+	}
+	
+	//todolist 수정
+	@Override
+	public boolean updateTodo(UpdateTodoReqDto updateTodoReqDto) throws Exception {
+		return todoRepository.updateTodoByTodoCode(updateTodoReqDto.toEntity()) > 0;
+	}
+	
+	//todolist 삭제
+	@Override
+	public boolean removeTodo(int todoCode) throws Exception {
+		return todoRepository.remove(todoCode) > 0;
+	}
+	
+
+	//중복된 것들을 정리해주는 역할
+	private Map<String, Object> createGetTodoListMap(int page, int contentCount) {
+		Map<String, Object> map = new HashMap<String, Object>(); //index key값으로 원하는 페이지 수만큼을 가져온다.(contentCount)
+		map.put("index", (page -1) * contentCount);//count key값으로 count를 알려줌
+		map.put("count", contentCount);
+		
+		return map;
+	}
+	
+	private List<TodoListRespDto> createTodoListRespDtos(List<Todo> todoList) {
 		List<TodoListRespDto> todoListRespDtos = new ArrayList<TodoListRespDto>();
 		
 		todoList.forEach(todo -> {
@@ -53,7 +107,7 @@ public class TodoServiceImpl implements TodoService{
 		});
 		
 		return todoListRespDtos;
+		
 	}
-
 	
 }

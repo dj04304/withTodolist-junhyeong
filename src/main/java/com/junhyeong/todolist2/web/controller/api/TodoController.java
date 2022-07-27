@@ -4,8 +4,11 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +18,7 @@ import com.junhyeong.todolist2.service.todo.TodoService;
 import com.junhyeong.todolist2.web.dto.CMRespDto;
 import com.junhyeong.todolist2.web.dto.todo.CreateTodoReqDto;
 import com.junhyeong.todolist2.web.dto.todo.TodoListRespDto;
+import com.junhyeong.todolist2.web.dto.todo.UpdateTodoReqDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,6 +29,7 @@ public class TodoController {
 
 	private final TodoService todoService;
 	
+	//list 생성 Controller
 	@GetMapping("/list")
 	public ResponseEntity<?> getTodoList(@RequestParam int page, @RequestParam int contentCount) {
 		List<TodoListRespDto> list = null;
@@ -38,8 +43,22 @@ public class TodoController {
 		
 		return ResponseEntity.ok().body(new CMRespDto<>(1, page + "page list success load", list));
 	}
+	//list importance 조회 Controller
+	@GetMapping("/list/importance")
+	public ResponseEntity<?> getImportanceList(@RequestParam int page, @RequestParam int contentCount) {
+		List<TodoListRespDto> impList = null;
+		
+		try {
+			impList = todoService.getImportanceTodoList(page, contentCount);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.ok().body(new CMRespDto<>(-1, page + "page importance list in failed load", page));
+		}
+		
+		return ResponseEntity.ok().body(new CMRespDto<>(1, page + "page importance list in success load", impList));
+	}
 	
-	
+	//list 조회 Controller
 	@PostMapping("/todo")
 	public ResponseEntity<?> addTodo(@RequestBody CreateTodoReqDto createTodoReqDto) {
 		
@@ -53,4 +72,54 @@ public class TodoController {
 		}
 		return ResponseEntity.ok().body(new CMRespDto<>(1, "success", createTodoReqDto));
 	}
+	
+	@PutMapping("/complete/todo/{todoCode}")
+	public ResponseEntity<?> setCompleteTodo(@PathVariable int todoCode) {
+		boolean status = false;
+			try {
+				status = todoService.updateTodoComplete(todoCode);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return ResponseEntity.internalServerError().body(new CMRespDto<>(-1, "Update todoComplete failed", status));
+			}
+		return ResponseEntity.ok().body(new CMRespDto<>(1, "Update todoComplete success", status));
+	}
+	
+	@PutMapping("/importance/todo/{todoCode}")
+	public ResponseEntity<?> setImportanceTodo(@PathVariable int todoCode) {
+		boolean status = false;
+			try {
+				status = todoService.updateTodoImportance(todoCode);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return ResponseEntity.internalServerError().body(new CMRespDto<>(-1, "Update todoImportance failed", status));
+			}
+		return ResponseEntity.ok().body(new CMRespDto<>(1, "Update todoImportance success", status));
+	}
+	
+	@PutMapping("/todo/{todoCode}")
+	public ResponseEntity<?> setTodo(@PathVariable int todoCode, @RequestBody UpdateTodoReqDto updateTodoReqDto) {
+		boolean status = false;
+			try {
+				updateTodoReqDto.setTodoCode(todoCode);
+				status = todoService.updateTodo(updateTodoReqDto);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return ResponseEntity.internalServerError().body(new CMRespDto<>(-1, "Update todoImportance failed", status));
+			}
+		return ResponseEntity.ok().body(new CMRespDto<>(1, "Update todoImportance success", status));
+	}
+	
+	@DeleteMapping("/todo/{todoCode}")
+	public ResponseEntity<?> removeTodo(@PathVariable int todoCode) {
+		boolean status = false;
+			try {
+				status = todoService.removeTodo(todoCode);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return ResponseEntity.internalServerError().body(new CMRespDto<>(-1, "delete todoImportance failed", status));
+			}
+		return ResponseEntity.ok().body(new CMRespDto<>(1, "delete todoImportance success", status));
+	}
+	
 }
