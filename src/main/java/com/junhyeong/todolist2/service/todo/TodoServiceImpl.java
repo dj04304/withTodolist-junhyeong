@@ -44,22 +44,10 @@ public class TodoServiceImpl implements TodoService{
 	//list 조회
 	
 	@Override
-	public List<TodoListRespDto> getTodoList(int page, int contentCount) throws Exception {
+	public List<TodoListRespDto> getTodoList(String type, int page, int contentCount) throws Exception {
 		
 		
-		List<Todo> todoList = todoRepository.getTodoListOfIndex(createGetTodoListMap(page, contentCount));
-		
-		
-		return createTodoListRespDtos(todoList);
-	}
-	
-	//importance 조회
-	
-	@Override
-	public List<TodoListRespDto> getImportanceTodoList(int page, int contentCount) throws Exception {
-		
-		List<Todo> todoList = todoRepository.getImportanceTodoListOfIndex(createGetTodoListMap(page, contentCount));
-		
+		List<Todo> todoList = todoRepository.getTodoList(createGetTodoListMap(type, page, contentCount));
 		
 		
 		return createTodoListRespDtos(todoList);
@@ -90,9 +78,10 @@ public class TodoServiceImpl implements TodoService{
 	}
 	
 
-	//중복된 것들을 정리해주는 역할
-	private Map<String, Object> createGetTodoListMap(int page, int contentCount) {
+	//중복된 것들을 정리해주는 역할 (리팩토링)
+	private Map<String, Object> createGetTodoListMap(String type, int page, int contentCount) {
 		Map<String, Object> map = new HashMap<String, Object>(); //index key값으로 원하는 페이지 수만큼을 가져온다.(contentCount)
+		map.put("type", type);
 		map.put("index", (page -1) * contentCount);//count key값으로 count를 알려줌
 		map.put("count", contentCount);
 		
