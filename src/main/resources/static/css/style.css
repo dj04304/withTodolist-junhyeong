@@ -26,3 +26,7 @@ body {
     background-color: #fafafa;
     height: 100%;
 }
+
+.visible {
+    display: none;
+}
