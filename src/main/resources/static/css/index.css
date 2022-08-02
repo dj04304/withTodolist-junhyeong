@@ -183,11 +183,14 @@ main {
 }
 
 
+.todo-content:not(:last-of-type) {
+	margin-bottom: 10px
+	
+}
+
 .todo-content {
     display: flex;
     align-items: center;
-
-    margin-bottom: 10px;
 
     border-bottom: 1px solid #dbdbdb;
 

@@ -60,6 +60,7 @@ public class TodoController {
 		return ResponseEntity.ok().body(new CMRespDto<>(1, "success", createTodoReqDto));
 	}
 	
+	//todolist를 했는지 안했는지(complete) 체크
 	@PutMapping("/complete/todo/{todoCode}")
 	public ResponseEntity<?> setCompleteTodo(@PathVariable int todoCode) {
 		boolean status = false;
@@ -72,6 +73,7 @@ public class TodoController {
 		return ResponseEntity.ok().body(new CMRespDto<>(1, "Update todoComplete success", status));
 	}
 	
+	//todolist중에서 중요한것인지 아닌지(importance)
 	@PutMapping("/importance/todo/{todoCode}")
 	public ResponseEntity<?> setImportanceTodo(@PathVariable int todoCode) {
 		boolean status = false;
@@ -84,6 +86,7 @@ public class TodoController {
 		return ResponseEntity.ok().body(new CMRespDto<>(1, "Update todoImportance success", status));
 	}
 	
+	//todolist update Controller
 	@PutMapping("/todo/{todoCode}")
 	public ResponseEntity<?> setTodo(@PathVariable int todoCode, @RequestBody UpdateTodoReqDto updateTodoReqDto) {
 		boolean status = false;
@@ -97,6 +100,7 @@ public class TodoController {
 		return ResponseEntity.ok().body(new CMRespDto<>(1, "Update todoImportance success", status));
 	}
 	
+	//todolist delete Controller
 	@DeleteMapping("/todo/{todoCode}")
 	public ResponseEntity<?> removeTodo(@PathVariable int todoCode) {
 		boolean status = false;
