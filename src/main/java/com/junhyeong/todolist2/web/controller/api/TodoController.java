@@ -29,7 +29,7 @@ public class TodoController {
 
 	private final TodoService todoService;
 	
-	//list 생성 Controller
+	//list 조회 Controller
 	@GetMapping("/list/{type}")
 	public ResponseEntity<?> getTodoList(@PathVariable String type, @RequestParam int page, @RequestParam int contentCount) {
 		List<TodoListRespDto> list = null;
@@ -45,7 +45,7 @@ public class TodoController {
 	}
 
 	
-	//list 조회 Controller
+	//list 생성 Controller
 	@PostMapping("/todo")
 	public ResponseEntity<?> addTodo(@RequestBody CreateTodoReqDto createTodoReqDto) {
 		

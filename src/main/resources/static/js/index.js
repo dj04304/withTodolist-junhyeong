@@ -1,36 +1,26 @@
 const selectedTypeButton = document.querySelector(".selected-type-button");
-const typeSelectBoxList = document.querySelector(".type-select-box-list"); 
-const typeSelectBoxListLis = typeSelectBoxList.querySelectorAll("li"); // typeSelectBoxList의 li 를 가져옴
+const typeSelectBoxList = document.querySelector(".type-select-box-list");
+const typeSelectBoxListLis = typeSelectBoxList.querySelectorAll("li");
 const todoContentList = document.querySelector(".todo-content-list");
-const sectionBody = document.querySelector(".section-body");//list의 높이
+const sectionBoby = document.querySelector(".section-body");
+const incompleteCountNumber = document.querySelector(".incomplete-count-number");
 
-// 가져올 페이지
+
 let page = 1;
-
-//
 let totalPage = 0;
 
-sectionBody.onscroll = () => {
-	//console.log("sectionBody: " + sectionBody.offsetHeight);
-	//console.log("scrollTop: " + sectionBody.scrollTop);
-	//console.log("todoContentList: " + todoContentList.offsetHeight); //전체길이
+sectionBoby.onscroll = () => {
+	console.log(sectionBoby.scrollTop)
+	let checkNum = todoContentList.clientHeight - sectionBoby.offsetHeight - sectionBoby.scrollTop;
 	
-	//스크롤의 길이
-	let checkNum = todoContentList.offsetHeight - sectionBody.offsetHeight - sectionBody.scrollTop;
-	
-	//오차범위는 보통  1과 -1 사이이기때문에 잡아줘야 한다.
-	if(checkNum < 1 && checkNum > -1 && page < totalPage) {
+	if(checkNum < 1 && checkNum > -1 && page < totalPage){
 		console.log(page);
 		console.log(totalPage);
 		page++;
 		load();
 	}
-	
 }
 
-
-
-// listType = all, complete, incomplete, importance
 let listType = "all";
 
 load();
@@ -39,93 +29,217 @@ selectedTypeButton.onclick = () => {
     typeSelectBoxList.classList.toggle("visible");
 }
 
-//focus가 벗어났을 때 
-/*
-selectedTypeButton.onblur = () => {
-    typeSelectBoxList.classList.toggle("visible");
-}
-*/
 
-for(let i = 0; i < typeSelectBoxListLis.length; i++) {
+for(let i = 0; i < typeSelectBoxListLis.length; i++){
 	
-	// typeSelectBoxList의 list들을 클릭했을 때 기능
 	typeSelectBoxListLis[i].onclick = () => {
-		//페이지를 1로 초기화
 		page = 1;
 		
-		for(let i = 0; i < typeSelectBoxListLis.length; i++) {
-			//typeSelectBoxListLis 가 type-selected 를 먼저 초기화 시켜준다.
-				typeSelectBoxListLis[i].classList.remove("type-selected");	
-			
+		for(let i = 0; i < typeSelectBoxListLis.length; i++){
+			typeSelectBoxListLis[i].classList.remove("type-selected");
 		}
 		
 		const selectedType = document.querySelector(".selected-type");
 		
-		//선택된 list를 type-selected에 포함해준다.
 		typeSelectBoxListLis[i].classList.add("type-selected");
 		
-		//listType 부분을 소문자로 바꿔서 listType에 대입해줌 (앞글자가 대문자이기 때문에)
 		listType = typeSelectBoxListLis[i].textContent.toLowerCase();
-		
 		
 		selectedType.textContent = typeSelectBoxListLis[i].textContent;
 		
-		//todoContentList내용을 초기화 해주고 load()
 		todoContentList.innerHTML = "";
 		
 		load();
 		
-		//onblur역할을 해줌
-		 typeSelectBoxList.classList.toggle("visible");
+		typeSelectBoxList.classList.toggle("visible");
+		
 	}
+	
 }
 
-//ajax
+
 function load() {
 	$.ajax({
-			type: "get",
-			url: `/api/v1/todolist/list/${listType}`,
-			data: {
-				"page": page,
-				contentCount: 20
-			},
-			dataType: "json",
-			success: (response) => {
-				//console.log(JSON.stringify(response));
-				getList(response.data);
-			},
-			error: errorMessage
+		type: "get",
+		url: `/api/v1/todolist/list/${listType}`,
+		data: {
+			"page": page,
+			contentCount: 20
+		},
+		dataType: "json",
+		success: (response) => {
+			getList(response.data);
+		},
+		error: errorMessage
+		
 	})
 }
 
-//마지막 리스트
 function setTotalCount(totalCount){
-	//Math.floor 로 버림을 하고 +1을 해준다.
-	totalPage = totalCount % 20 == 0 ? totalCount / 20 : Math.floor(totalCount / 20) + 1
+	totalPage = totalCount % 20 == 0 ? totalCount / 20 : Math.floor(totalCount / 20) + 1;
 }
 
 function getList(data) {
-	const incompleteCountNumber = document.querySelector(".incomplete-count-number");
-	//완료하지 않은 일 가져오기
 	incompleteCountNumber.textContent = data[0].incompleteCount;
-	
 	setTotalCount(data[0].totalCount);
-	
-	console.log(todoContentList);
 	for(let content of data) {
 		const listContent = `
-				<li class="todo-content">
-                    <input type="checkbox"  id="complete-check-${content.todoCode}" class="complete-check" ${content.todoComplete ? 'checked' : ''}>
-                    <label for="complete-check-${content.todoCode}"></label>
-                    <div class="todo-content-text">${content.todo}</div>
-                    <input type="text" class="todo-content-input visible" value = "${content.todo}">
-                    <input type="checkbox" id="importance-check-${content.todoCode}" class="importance-check" ${content.importance ? 'checked' : ''}>
-                    <label for="importance-check-${content.todoCode}"></label>
-                    <div class="trash-button"><i class="fa-solid fa-trash"></i></div>
-                </li>
+			<li class="todo-content">
+                <input type="checkbox" id="complete-check-${content.todoCode}" class="complete-check" ${content.todoComplete ? 'checked' : ''}>
+                <label for="complete-check-${content.todoCode}"></label>
+                <div class="todo-content-text">${content.todo}</div>
+                <input type="text" class="todo-content-input visible" value="${content.todo}">
+                <input type="checkbox" id="importance-check-${content.todoCode}" class="importance-check" ${content.importance ? 'checked' : ''}>
+                <label for="importance-check-${content.todoCode}"></label>
+                <div class="trash-button"><i class="fa-solid fa-trash"></i></div>
+            </li>
 		`
 		todoContentList.innerHTML += listContent;
 	}
+	
+	addEvent();
+}
+
+function addEvent() {
+	const todoContents = document.querySelectorAll(".todo-content");
+	
+	for(let i = 0; i < todoContents.length; i++){
+		let todoCode = todoContents[i].querySelector(".complete-check").getAttribute("id");
+		let index = todoCode.lastIndexOf("-");
+		todoCode = todoCode.substring(index + 1);
+		
+		todoContents[i].querySelector(".complete-check").onchange = () => {
+			let incompleteCount = parseInt(incompleteCountNumber.textContent)
+			
+			if(todoContents[i].querySelector(".complete-check").checked){
+				incompleteCountNumber.textContent = incompleteCount - 1;
+			}else {
+				incompleteCountNumber.textContent = incompleteCount + 1;
+			}
+			updateCheckStatus("complete", todoContents[i], todoCode);
+		}
+		
+		todoContents[i].querySelector(".importance-check").onchange = () => {
+			updateCheckStatus("importance", todoContents[i], todoCode);
+		}
+		
+		todoContents[i].querySelector(".trash-button").onclick = () => {
+			deleteTodo(todoContents[i], todoCode);
+		}
+		
+		const todoContentText = todoContents[i].querySelector(".todo-content-text");
+		const todoContentInput = todoContents[i].querySelector(".todo-content-input");
+		let todoContentValue = null;
+		
+		//엔터 이벤트가 일어났을 때, onkeyup 이후 onblur가 실행되어 두번 실행되기 때문에, eventFlag 사용
+		let eventFlag = false;
+		
+		//리스트 input 내 클릭시 수정
+		//e 는 자기자신(todoContentText)을 가리킨다.
+		todoContentText.onclick = () => {
+			todoContentValue = todoContentInput.value;
+			todoContentText.classList.toggle("visible");
+			todoContentInput.classList.toggle("visible");
+			todoContentInput.focus();
+			eventFlag = true;
+		}
+		
+		let updateTodoContent = () => {
+			if(todoContentValue != todoContentInput.value){
+						$.ajax({
+							type: "put",
+							url: `/api/v1/todolist/todo/${todoCode}`,
+							contentType: "application/json", 
+							data: JSON.stringify({
+								"todoCode": todoCode,
+								todo: todoContentInput.value
+								}),
+							async: false,
+							dataType: "json",
+							success: (response) => {
+								if(response.data) {
+									todoContentText.textContent = todoContentInput.value;
+								}
+							},
+							error: errorMessage
+						})
+				}
+				todoContentText.classList.toggle("visible");
+				todoContentInput.classList.toggle("visible");
+		}
+		
+		//input 에서 포커스가 사라졌을 때
+		todoContentInput.onblur = () =>{
+			if(eventFlag){
+					//내용이 바꼈을 때
+				updateTodoContent();
+			}
+			
+		}
+		
+		todoContentInput.onkeyup = () => {
+			if(window.event.keyCode == 13){
+				eventFlag = false;
+				updateTodoContent();
+			}
+			
+		}
+		
+	}
+	
+}
+
+
+function updateStatus(type, todoCode) {
+	result = false;
+	
+	$.ajax({
+		type: "put",
+		url: `/api/v1/todolist/${type}/todo/${todoCode}`,
+		async: false,
+		dataType: "json",
+		success: (response) => {
+			result = response.data
+			
+		},
+		error: errorMessage
+	})
+	return result;
+}
+
+function updateCheckStatus(type, todoContent, todoCode) {
+	let result = updateStatus(type, todoCode);
+	
+	if(
+			(
+				(
+					type == "complete" 
+					&& 
+					(listType == "complete" || listType == "incomplete")
+				) 
+				|| 
+				(type == "importance" && listType == "importance")
+			) 
+			&& 
+			result
+		) {
+		todoContentList.removeChild(todoContent);
+	}
+}
+
+function deleteTodo(todoContent, todoCode) {
+	$.ajax({
+		type: "delete",
+		url: `/api/v1/todolist/todo/${todoCode}`,
+		async: false,
+		dataType: "json",
+		success: (response) => {
+			if(response.data){
+				todoContentList.removeChild(todoContent);
+			}
+		},
+		error: errorMessage
+	})
 }
 
 function errorMessage(request, status, error) {
@@ -134,3 +248,4 @@ function errorMessage(request, status, error) {
 	console.log(request.responseText);
 	console.log(error);
 }
+

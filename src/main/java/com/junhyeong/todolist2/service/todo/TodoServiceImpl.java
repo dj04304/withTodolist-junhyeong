@@ -26,7 +26,9 @@ public class TodoServiceImpl implements TodoService{
 	@Override
 	public boolean createTodo(CreateTodoReqDto createTodoReqDto) throws Exception {
 		Todo todoEntity = createTodoReqDto.toEntity();
-		String content = todoEntity.getTodo_content();
+		
+		//데이터 1000개를 한번에 밀어넣기 위한 수식
+//		String content = todoEntity.getTodo_content();
 //		for(int i = 200; i < 1000; i++) {
 //			todoEntity.setTodo_content(content + "_" + (i + 1));
 //			if(i % 2 == 0) {
