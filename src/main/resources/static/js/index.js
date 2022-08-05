@@ -4,6 +4,8 @@ const typeSelectBoxListLis = typeSelectBoxList.querySelectorAll("li"); // listTy
 const todoContentList = document.querySelector(".todo-content-list"); //list 내용이 들어갈 공간
 const sectionBoby = document.querySelector(".section-body"); //list의 높이
 const incompleteCountNumber = document.querySelector(".incomplete-count-number"); //완료되지 않은 일
+const modalContainer = document.querySelector(".modal-container");
+const todoAddButton = document.querySelector(".todo-add-button");
 
 /* 
 	게시글 불러오기
@@ -53,8 +55,6 @@ let listType = "all";
 
 //실행
 load();
-
-
 
 //20개씩 가져오기 때문에 20으로 딱 나누어 떨어지면 20으로 나눠서 들고오고, 그렇지 않다면 소숫점을 버리고 1을 더해줌으로써 나머지
 //페이지도 가져올 수 있다.
@@ -321,8 +321,61 @@ for(let i = 0; i < typeSelectBoxListLis.length; i++){
 	
 }
 
+todoAddButton.onclick = () => {
+	modalContainer.classList.toggle("modal-visible");
 
-////////////////////////////////////////////////////////<<<<REQU>>>>////////////////////////////////////////////////////////////////
+	//overflow hidden 하지 않으면 모달이 떠도 스크롤이 내려간다.
+	todoContentList.style.overflow = "hidden";
+	setModalEvent();
+}
+
+function clearModalTodoInputValue(modalTodoInput) {
+	modalTodoInput.value = "";
+}
+
+function uncheckedImportance(importanceFlag) {
+	importanceFlag.checked = false;
+}
+
+function setModalEvent() {
+	const modalCloseButton = modalContainer.querySelector(".modal-closed-button");
+	const importanceFlag = modalContainer.querySelector(".importance-check");
+	const modalTodoInput = modalContainer.querySelector(".modal-todo-input");
+	const modalCommitButton = modalContainer.querySelector(".modal-commit-button");
+	
+	modalContainer.onclick = (e) => {
+		//타겟 객체가 자기자신이어야만 하게끔 if를 해줌
+		if(e.target == modalContainer){
+			//close버튼과 동일한 행위를 함
+			modalCloseButton.click();
+		}
+	}
+
+	modalCloseButton.onclick = () => {
+		modalContainer.classList.toggle("modal-visible");
+		todoContentList.style.overflow = "auto";
+		uncheckedImportance(importanceFlag);
+		clearModalTodoInputValue(modalTodoInput)
+	}
+	
+	modalTodoInput.onkeyup = () => {
+		if(window.event.keyCode == 13) {
+			modalCommitButton.click();
+		}
+	}
+	
+	modalCommitButton.onclick = () => {
+		data = {
+			importance: importanceFlag.checked,
+			todo: modalTodoInput.value
+		}
+		addTodo(data);
+		modalCloseButton.click();
+	}
+	
+}
+
+////////////////////////////////////////////////////////////<<<<REQU>>>>////////////////////////////////////////////////////////////
 
 
 
@@ -401,6 +454,24 @@ function deleteTodo(todoContent, todoCode) {
 		success: (response) => {
 			if(response.data){
 				todoContentList.removeChild(todoContent);
+			}
+		},
+		error: errorMessage
+	})
+}
+
+function addTodo(data) {
+	$.ajax({
+		type: "post",
+		url: `/api/v1/todolist/todo`,
+		contentType: "application/json",
+		data: JSON.stringify(data),
+		async: false,
+		dataType: "json",
+		success: (response) => {
+			if(response.data) {
+				clearTodoContentList();
+				load();
 			}
 		},
 		error: errorMessage

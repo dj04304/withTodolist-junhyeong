@@ -48,16 +48,17 @@ public class TodoController {
 	//list 생성 Controller
 	@PostMapping("/todo")
 	public ResponseEntity<?> addTodo(@RequestBody CreateTodoReqDto createTodoReqDto) {
-		
+		boolean status = false;
 		try {
-			if(!todoService.createTodo(createTodoReqDto)) {
+			status = todoService.createTodo(createTodoReqDto);
+			if(!status) {
 				throw new RuntimeException("DataBase Error"); //생성되지 않으면 실행되지 않는다고 오류를 던져준다.
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.internalServerError().body(new CMRespDto<>(-1, "Adding todo failed", createTodoReqDto));
+			return ResponseEntity.internalServerError().body(new CMRespDto<>(-1, "Adding todo failed", status));
 		}
-		return ResponseEntity.ok().body(new CMRespDto<>(1, "success", createTodoReqDto));
+		return ResponseEntity.ok().body(new CMRespDto<>(1, "success", status));
 	}
 	
 	//todolist를 했는지 안했는지(complete) 체크
