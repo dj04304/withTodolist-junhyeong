@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.junhyeong.todolist2.domain.user.UserRepository">
+  	<insert id="Save" parameterType="com.junhyeong.todolist2.domain.user.User">
+  		INSERT INTO
+			user_mst
+		VALUES(
+			0,
+			#{user_id},
+			#{user_password},
+			#{user_name},
+			#{user_email},
+			#{user_roles},
+			#{user_provider}
+			NOW(),
+			NOW()
+		)
+  	</insert>
+  	<select id="findUserByUsername" resultType="String" parameterType="com.junhyeong.todolist2.domain.user.User">
+  		select
+  			um.user_code,
+  			
+  			um.user_id,
+  			um.user_password,
+  			um.user_name,
+  			um.user_email,
+  			um.user_roles,
+  			um.user_provider,
+  			
+  			ud.user_profile_img,
+  			ud.user_address,
+  			ud.user_phone,
+  			ud.user_gender
+  		
+  		from
+  			user_mst um
+  			left outer join user_dtl ud on(ud.user_code = um.user_code)
+  		where
+  			um.user_id = #{username}
+  	</select>
+  	
+  </mapper>

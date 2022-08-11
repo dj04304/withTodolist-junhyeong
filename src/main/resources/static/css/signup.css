@@ -1,0 +1,103 @@
+#container {
+   width: 100%;
+}
+
+header {
+    margin: 0px auto;
+
+    text-align: center;
+
+    width: 1200px;
+    height: 100px;
+}
+
+.logo {
+    font-size: 35px;
+    color: red;
+    line-height: 100px;
+}
+
+.signup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+   margin: 0px auto;
+
+   width: 450px;
+   height: 650px;
+
+   background: rgba(0, 0, 0, 0.7);
+   border-radius: 5px;
+}
+
+.signup_text {
+    font-size: 35px;
+    color: #fff;
+}
+
+.signup_form_group {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    padding: 30px 0px;
+
+    height: 600px;
+
+}
+
+.signup_form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    height: 350px;
+   
+}
+
+label {
+    font-size: 16px;
+    color: #fff;
+}
+
+input {
+    padding: 16px ;
+
+    width: 300px;
+    height: 50px;
+
+    border-radius: 5px;
+    border: none;
+
+    background-color: #555;
+    
+    color: #fff;
+}
+
+input::placeholder {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+input:-webkit-autofill {
+   -webkit-box-shadow: 0 0 0 1000px #555 inset;
+   -webkit-text-fill-color: #fff
+}
+
+button {
+    margin-top: 20px;
+    
+    width: 150px;
+    height: 50px;
+
+    background-color: red;
+    border-radius: 5px;
+    border: none;
+
+    font-size: 16px;
+    color: #fff;
+
+    cursor: pointer;
+}

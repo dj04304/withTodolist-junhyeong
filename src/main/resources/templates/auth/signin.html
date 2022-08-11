@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>signin</title>
+<link rel="stylesheet" href="/static/css/style.css">
+<link rel="stylesheet" href="/static/css/signin.css">
+</head>
+<body>
+    <div id="container">
+        <header>
+            <h1 class="logo">Welcom To TodoList!</h1>
+        </header>
+        <div class="signin">
+            <form method="post" action="/auth/signin" >
+                <div class="login-page">
+                    <h1 class="signin-text">로그인</h1>
+                    <div class="signin-group">
+                        <div class="signin-id">
+                            <input type="text" name="username" placeholder="아이디 또는 이메일주소">
+                        </div>
+                        <div class="signin-password ">
+                            <input type="password" name="password" placeholder="비밀번호">
+                        </div>
+                    </div>
+                    <button class="submit-button" type="submit">로그인</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

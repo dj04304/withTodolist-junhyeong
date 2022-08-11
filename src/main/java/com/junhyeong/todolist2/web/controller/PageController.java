@@ -8,9 +8,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/todolist")
 public class PageController {
 	
-	@GetMapping("/index")
+	@GetMapping({"/", "/index"})
 	public String loadIndex() {
 		return "index";
 	}
-
+	
+	@GetMapping("/login")
+	public String signin() {
+		return "/auth/signin";
+	}
+	
+	@GetMapping("/signup")
+	public String signup() {
+		return "/auth/signup";
+	}
+	
 }
