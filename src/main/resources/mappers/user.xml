@@ -4,7 +4,7 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
   
   <mapper namespace="com.junhyeong.todolist2.domain.user.UserRepository">
-  	<insert id="Save" parameterType="com.junhyeong.todolist2.domain.user.User">
+  	<insert id="save" parameterType="com.junhyeong.todolist2.domain.user.User">
   		INSERT INTO
 			user_mst
 		VALUES(
@@ -14,12 +14,12 @@
 			#{user_name},
 			#{user_email},
 			#{user_roles},
-			#{user_provider}
+			#{user_provider},
 			NOW(),
 			NOW()
 		)
   	</insert>
-  	<select id="findUserByUsername" resultType="String" parameterType="com.junhyeong.todolist2.domain.user.User">
+  	<select id="findUserByUsername" parameterType="String" resultType="com.junhyeong.todolist2.domain.user.User">
   		select
   			um.user_code,
   			

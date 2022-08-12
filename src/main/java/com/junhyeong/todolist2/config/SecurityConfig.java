@@ -7,6 +7,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.junhyeong.todolist2.config.auth.AuthFailureHandler;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
@@ -28,7 +30,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 				.and()
 				.formLogin()
 				.loginPage("/todolist/login")
-				.loginProcessingUrl("/auth/signin")
+				.loginProcessingUrl("/todolist/signin")
+				.failureHandler(new AuthFailureHandler())
 				.defaultSuccessUrl("/todolist/");
 	}
 }

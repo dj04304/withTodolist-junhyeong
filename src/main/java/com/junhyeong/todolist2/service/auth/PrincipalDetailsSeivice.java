@@ -22,17 +22,16 @@ public class PrincipalDetailsSeivice implements UserDetailsService{
 		User userEntity = null;
 		
 		try {
-			 userEntity = userRepository.findUserByUsername(username);
+			 userEntity = userRepository.findUserByUsername(username);			 
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new UsernameNotFoundException(username);
 		}
-		
 		if(userEntity == null) {
 			throw new UsernameNotFoundException(username + "사용자 이름을 찾을 수 없습니다.");
 		}
 		
-		return null;
+		return new PrincipalDetails(userEntity);
 	}
 
 	public boolean addUser(UserSignupReqDto userSignupReqDto) throws Exception{

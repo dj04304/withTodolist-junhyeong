@@ -13,7 +13,7 @@ public class PageController {
 		return "index";
 	}
 	
-	@GetMapping("/login")
+	@GetMapping({"/login", "/signin"})
 	public String signin() {
 		return "/auth/signin";
 	}
